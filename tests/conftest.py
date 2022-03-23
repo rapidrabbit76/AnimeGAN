@@ -1,6 +1,5 @@
 import pytest
 import torch
-import numpy as np
 from easydict import EasyDict
 from models import Generator, Discriminator, Encoder
 

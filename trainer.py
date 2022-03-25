@@ -60,9 +60,37 @@ def training(args):
         disc_optim,
     )
     ############### Artifacts ################
-    # torchscript_path = os.path.join(logger.dir, "AnimeGAN.pt.zip")
-    # example_inputs =
-    gen.to_torchscript()
+    gen = gen.cpu()
+    torchscript_path = os.path.join(logger.dir, "AnimeGAN.pt.zip")
+    example_inputs = torch.rand(
+        [1, args.image_channels, args.image_size, args.image_size]
+    )
+    gen.to_torchscript(torchscript_path, "trace", example_inputs)
+
+    onnx_path = os.path.join(logger.dir, "AnimeGAN.onnx")
+    input_names = ["input"]
+    output_names = ["output"]
+    dynamic_axes = {
+        input_names[0]: {0: "batch_size", 1: "c", 2: "h", 3: "w"},
+        output_names[0]: {0: "batch_size", 1: "c", 2: "h", 3: "w"},
+    }
+    gen.to_onnx(
+        file_path=onnx_path,
+        input_sample=example_inputs,
+        export_params=True,
+        input_names=input_names,
+        output_names=output_names,
+        opset_version=12,
+        dynamic_axes=dynamic_axes,
+    )
+
+    if args.upload_artifacts:
+        artifacts = wandb.Artifact(
+            "Adaptive-Instance-Normalization", type="model"
+        )
+        artifacts.add_file(torchscript_path, "torchscript")
+        artifacts.add_file(onnx_path, "onnx")
+        logger.log_artifact(artifacts)
 
 
 def init_train_loop(args, real_dl, sample, gen, encoder, init_optim):

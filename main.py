@@ -3,6 +3,10 @@ import argparse
 from trainer import training
 
 
+def str2bool(v):
+    return v.lower() in ("yes", "y", "true", "t", "1")
+
+
 def main():
     parser = argparse.ArgumentParser()
     # project
@@ -45,7 +49,7 @@ def main():
     parser.add_argument("--gp_lambda", type=float, default=10.0)
 
     # logger
-    parser.add_argument("--upload_artifacts", action="store_true")
+    parser.add_argument("--upload_artifacts", action=str2bool, default=True)
     parser.add_argument("--show_image_count", type=int, default=8)
 
     args = parser.parse_args()

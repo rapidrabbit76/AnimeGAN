@@ -1,3 +1,4 @@
+import tempfile
 import pytest
 import torch
 from easydict import EasyDict
@@ -17,6 +18,11 @@ def args():
             "sn": True,
         }
     )
+
+
+@pytest.fixture(scope="session")
+def save_dir():
+    return tempfile.TemporaryDirectory()
 
 
 def tensor(b, size, c):

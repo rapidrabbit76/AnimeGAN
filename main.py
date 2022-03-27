@@ -31,6 +31,7 @@ def main():
     parser.add_argument("--sn", type=int, default=1)
 
     # training
+    parser.add_argument("--ckpt_path", type=str, default="")
     parser.add_argument("--epochs", type=int, default=110)
     parser.add_argument("--init_epochs", type=int, default=10)
     parser.add_argument("--init_lr", type=float, default=2e-4)
@@ -49,7 +50,7 @@ def main():
     parser.add_argument("--gp_lambda", type=float, default=10.0)
 
     # logger
-    parser.add_argument("--upload_artifacts", action=str2bool, default=True)
+    parser.add_argument("--upload_artifacts", type=str2bool, default=True)
     parser.add_argument("--show_image_count", type=int, default=8)
 
     args = parser.parse_args()

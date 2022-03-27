@@ -17,7 +17,6 @@ def training(args):
     global device, gs, logger
     seed_everything(args.seed)
     logger = wandb.init(config=args, save_code=True)
-
     gs = 0
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
 
@@ -32,6 +31,11 @@ def training(args):
     disc = Discriminator(args).to(device)
     initialize_weights(disc)
     encoder = Encoder(device).to(device)
+
+    if os.path.exists(args.ckpt_path):
+        ckpt = torch.load(args.ckpt_path, map_location=device)
+        gen.load_state_dict(ckpt["gen"])
+        disc.load_state_dict(ckpt["disc"])
 
     ################# Losses #################
     gan_loss_obj = losses.LSGAN(args)

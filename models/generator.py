@@ -12,7 +12,6 @@ class Generator(pl.LightningModule):
         self.upsample = nn.Upsample(
             scale_factor=2, mode="bilinear", align_corners=False
         )
-        self.save_hyperparameters(args)
         image_channels = args.image_channels
         dim = args.g_dim
 

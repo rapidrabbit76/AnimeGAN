@@ -7,6 +7,8 @@
 .testmondata
 
 # DATASET
+dataset/
+dataset
 DATASET/
 DATASET
 
@@ -17,6 +19,15 @@ DATASET
 *.pth
 *.onnx
 
+# video
+./src/video
+
 # Log
 tensorboard/
 wandb/
+
+# test
+.coverage
+
+# ETC
+tools.ipynb

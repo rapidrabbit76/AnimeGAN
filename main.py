@@ -28,7 +28,7 @@ def main():
     parser.add_argument("--g_dim", type=int, default=32)
     parser.add_argument("--d_dim", type=int, default=32)
     parser.add_argument("--d_layers", type=int, default=3)
-    parser.add_argument("--sn", type=int, default=1)
+    parser.add_argument("--sn", type=str2bool, default=True)
 
     # training
     parser.add_argument("--ckpt_path", type=str, default="")
@@ -41,19 +41,45 @@ def main():
     parser.add_argument("--beta_2", type=float, default=0.999)
 
     # loss weights
-    parser.add_argument("--ctlw", type=float, default=1.5)
-    parser.add_argument("--stlw", type=float, default=3.0)
-    parser.add_argument("--colw", type=float, default=30.0)
-    parser.add_argument("--tvlw", type=float, default=1.0)
-    parser.add_argument("--advgw", type=float, default=10.0)
-    parser.add_argument("--advdw", type=float, default=10.0)
-    parser.add_argument("--gp_lambda", type=float, default=10.0)
+    parser.add_argument(
+        "--ctlw", type=float, default=1.5, help="content loss weight"
+    )
+    parser.add_argument(
+        "--stlw", type=float, default=3.0, help="gram matrix style loss weight"
+    )
+    parser.add_argument(
+        "--colw", type=float, default=30.0, help="yuv color loss weight"
+    )
+    # tvlw for v2
+    parser.add_argument(
+        "--tvlw", type=float, default=1.0, help="total variation loss weight"
+    )
+    parser.add_argument(
+        "--advgw",
+        type=float,
+        default=10.0,
+        help="generator adversarial loss weight",
+    )
+    parser.add_argument(
+        "--advdw",
+        type=float,
+        default=10.0,
+        help="discriminator adversarial loss weight",
+    )
+    # gp for v2
+    parser.add_argument(
+        "--gp_lambda",
+        type=float,
+        default=10.0,
+        help="gradient penalty weight",
+    )
 
     # logger
     parser.add_argument("--upload_artifacts", type=str2bool, default=True)
     parser.add_argument("--show_image_count", type=int, default=8)
 
     args = parser.parse_args()
+    assert args.show_image_count <= args.batch_size
     training(args)
 
 

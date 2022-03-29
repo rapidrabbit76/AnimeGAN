@@ -120,7 +120,11 @@ python main.py \
 
 ### Shinkai
 
-TODO Video gif
+| [Input](https://www.youtube.com/watch?v=KoMw2Qa5bQs) |
+| ---------------------------------------------------- |
+| ![](./src/gif/sample_origin.gif)                     |
+| Output                                               |
+| ![A](./src/gif/sample_anime.gif)                     |
 
 | Input                         | Output                          |
 | ----------------------------- | ------------------------------- |
@@ -129,3 +133,8 @@ TODO Video gif
 | ![](./src/image/sample/0.png) | ![A](./src/image/Shinkai/0.png) |
 | ![](./src/image/sample/2.png) | ![A](./src/image/Shinkai/2.png) |
 | ![](./src/image/sample/3.png) | ![A](./src/image/Shinkai/3.png) |
+
+## References
+
+- [AnimeGAN](https://github.com/TachibanaYoshino/AnimeGAN)
+- [pytorch-animeGAN](https://github.com/ptran1203/pytorch-animeGAN)

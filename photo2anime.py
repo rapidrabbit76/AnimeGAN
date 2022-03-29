@@ -20,6 +20,7 @@ def main():
     parser.add_argument("--device", type=str, default="cpu")
     parser.add_argument("--image_channels", type=int, default=3)
     parser.add_argument("--g_dim", type=int, default=32)
+    parser.add_argument("--precision", type=int, default=32, choices=[16, 32])
     args = parser.parse_args()
 
     assert os.path.exists(args.ckpt_path), f"{args.ckpt_path} not Found"
@@ -32,10 +33,10 @@ def main():
     model.load_state_dict(ckpt["gen"])
     model = model.to(args.device).eval()
 
-    convert(paths, model, args.save_root, args.device)
+    convert(paths, model, args.save_root, args.device, args.precision)
 
 
-def convert(paths, model, save_dir, device):
+def convert(paths, model, save_dir, device, precision):
     pbar = tqdm(paths)
     for path in pbar:
         image = load_image(path)
@@ -43,8 +44,13 @@ def convert(paths, model, save_dir, device):
         image = np.transpose(image, [0, 3, 2, 1])
         image = torch.from_numpy(image)
         image = normalize(image)
+        image = image.to(device)
 
-        image = model(image.to(device))
+        if precision == 16:
+            with torch.cuda.amp.autocast():
+                image = model(image)
+        else:
+            image = model(image)
 
         image = denormalize(image).cpu().numpy().astype(np.uint8)
         image = np.transpose(image, [0, 3, 2, 1])[0]

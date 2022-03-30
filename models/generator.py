@@ -9,6 +9,7 @@ import torch.optim as optim
 class Generator(pl.LightningModule):
     def __init__(self, args) -> None:
         super().__init__()
+        self.save_hyperparameters(args)
         self.upsample = nn.Upsample(
             scale_factor=2, mode="bilinear", align_corners=False
         )

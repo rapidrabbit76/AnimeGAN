@@ -101,9 +101,7 @@ def init_train_loop(args, real_dl, sample, gen, encoder, init_optim):
     for epoch in range(args.init_epochs):
         pbar = tqdm(real_dl)
         for batch_idx, batch in enumerate(pbar):
-            image, loss = init_train_step(
-                gen, encoder, init_optim, epoch, pbar, batch
-            )
+            image, loss = init_training_step(gen, encoder, init_optim, batch)
             if batch_idx % 10 == 0:
                 wandb.log({"init/init_contnet_loss": loss.item()})
 
@@ -112,8 +110,12 @@ def init_train_loop(args, real_dl, sample, gen, encoder, init_optim):
                 image = log_image([sample, _sample], args.show_image_count)
                 wandb.log({"init/image": image})
 
+            pbar.set_description(
+                f"[init E:{epoch+1}/{args.init_epochs}]_[content loss:{loss.item():0.4f}]"
+            )
 
-def init_train_step(gen, encoder, init_optim, epoch, pbar, batch):
+
+def init_training_step(gen, encoder, init_optim, batch):
     torch.set_grad_enabled(True)
     image, *_ = batch
     image = image.to(device)
@@ -122,9 +124,6 @@ def init_train_step(gen, encoder, init_optim, epoch, pbar, batch):
     init_optim.zero_grad()
     loss.backward()
     init_optim.step()
-    pbar.set_description(
-        f"[init E:{epoch+1}]_[content loss:{loss.item():0.4f}]"
-    )
     torch.set_grad_enabled(False)
     return image, loss
 
@@ -156,7 +155,7 @@ def train_loop(
                 g_loss = g_loss_dict["loss"]
                 pbar.set_description_str(
                     (
-                        f"[E:{epoch+1}][GS:{gs}][IDX:{batch_idx}] "
+                        f"[E:{epoch+1}/{args.epochs}][GS:{gs}][IDX:{batch_idx}] "
                         f"[D:{d_loss.item():.4f}]"
                         f"[G:{g_loss.item():.4f}]"
                     )

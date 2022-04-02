@@ -15,6 +15,7 @@ from models import Discriminator, Encoder, Generator
 
 def training(args):
     global device, gs, logger
+    torch.backends.cudnn.benchmark = True
     seed_everything(args.seed)
     logger = wandb.init(config=args, save_code=True)
     gs = 0
